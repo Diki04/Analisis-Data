@@ -5,16 +5,21 @@ import streamlit as st
 import datetime
 import os
 
+# ===============================
+# PAGE CONFIG
+# ===============================
 st.set_page_config(
     page_title="Bike Sharing Analytics By Rizkillah",
     page_icon="🚲",
     layout="wide"
 )
 
+COLOR_PRIMARY = "#007BFF"
+COLOR_ACCENT = "#FF5733"
 
-COLOR_PRIMARY = "#007BFF"   
-COLOR_ACCENT = "#FF5733"    
-
+# ===============================
+# THEME
+# ===============================
 sns.set_theme(style="white", rc={
     "axes.grid": True,
     "grid.color": "#E9ECEF",
@@ -33,91 +38,111 @@ sns.set_theme(style="white", rc={
 
 st.markdown("""
 <style>
-    /* Judul Utama */
-    .main-title {
-        font-size: 3rem;
-        font-weight: 800;
-        text-align: center;
-        margin-bottom: 1rem;
-        /* Warna akan otomatis mengikuti tema (Putih di Dark Mode) */
-    }
-    
-    /* Insight Box (Kotak Penjelasan) */
-    /* Kita beri warna sedikit terang agar teks hitam terbaca, atau biarkan default */
-    .insight-box {
-        background-color: #262730; /* Warna gelap sedikit beda dari background */
-        border-left: 5px solid #007BFF;
-        padding: 15px;
-        margin-top: 15px;
-        border-radius: 5px;
-        /* Text otomatis putih */
-    }
+.main-title {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.insight-box {
+    background-color: #262730;
+    border-left: 5px solid #007BFF;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 5px;
+}
 </style>
 """, unsafe_allow_html=True)
 
+# ===============================
+# LOAD DATA (FIXED)
+# ===============================
 @st.cache_data
 def load_data():
-    try:
-        base_dir = os.path.dirname(__file__)
-        days_path = os.path.join(base_dir, "day_clean.csv")
-        hours_path = os.path.join(base_dir, "hour_clean.csv")
+    base_dir = os.path.dirname(__file__)
+    days_path = os.path.join(base_dir, "day_clean.csv")
+    hours_path = os.path.join(base_dir, "hour_clean.csv")
 
-        days_df = pd.read_csv(days_path)
-        hours_df = pd.read_csv(hours_path)
+    days_df = pd.read_csv(days_path)
+    hours_df = pd.read_csv(hours_path)
 
-        return days_df, hours_df
+    # FIX: datetime harus sebelum dipakai
+    days_df["dteday"] = pd.to_datetime(days_df["dteday"])
+    hours_df["dteday"] = pd.to_datetime(hours_df["dteday"])
 
-    except FileNotFoundError as e:
-        st.error(f"File CSV tidak ditemukan: {e}")
-        st.stop()
-
-    datetime_columns = ["dteday"]
-    for column in datetime_columns:
-        days_df[column] = pd.to_datetime(days_df[column])
-        hours_df[column] = pd.to_datetime(hours_df[column])
-        
     return days_df, hours_df
 
+# ===============================
+# FEATURE ENGINEERING
+# ===============================
 def create_advanced_features(df):
     season_map = {1: 'Spring', 2: 'Summer', 3: 'Fall', 4: 'Winter'}
     if df['season'].dtype in ['int64', 'int32']:
         df['season'] = df['season'].map(season_map)
-        
+
     if 'humidity_category' not in df.columns:
-        df['humidity_category'] = pd.cut(df['humidity'], bins=[0, 0.45, 0.75, 1.0], labels=['Kering', 'Ideal', 'Lembab'])
+        df['humidity_category'] = pd.cut(
+            df['humidity'],
+            bins=[0, 0.45, 0.75, 1.0],
+            labels=['Kering', 'Ideal', 'Lembab']
+        )
+
     if 'wind_category' not in df.columns:
-        df['wind_category'] = pd.cut(df['wind_speed'], bins=[0, 0.2, 0.4, 1.0], labels=['Low', 'Medium', 'High'])
-        
+        df['wind_category'] = pd.cut(
+            df['wind_speed'],
+            bins=[0, 0.2, 0.4, 1.0],
+            labels=['Low', 'Medium', 'High']
+        )
+
     return df
 
+# ===============================
+# LOAD & PROCESS
+# ===============================
 days_df_raw, hours_df_raw = load_data()
 days_df = create_advanced_features(days_df_raw)
 hours_df = create_advanced_features(hours_df_raw)
 
-min_date = days_df["dteday"].min()
-max_date = days_df["dteday"].max()
+# ===============================
+# DATE FILTER (FIXED)
+# ===============================
+min_date = days_df["dteday"].min().date()
+max_date = days_df["dteday"].max().date()
 
 with st.sidebar:
     st.header("Filter Dashboard")
     start_date, end_date = st.date_input(
-        label='Rentang Waktu',
+        "Rentang Waktu",
         min_value=min_date,
         max_value=max_date,
-        value=[min_date, max_date]
+        value=(min_date, max_date)
     )
-    st.caption(f"Data tersedia dari {min_date.date()} hingga {max_date.date()}")
+    st.caption(f"Data tersedia dari {min_date} hingga {max_date}")
 
-main_df_days = days_df[(days_df["dteday"] >= str(start_date)) & (days_df["dteday"] <= str(end_date))]
-main_df_hour = hours_df[(hours_df["dteday"] >= str(start_date)) & (hours_df["dteday"] <= str(end_date))]
+main_df_days = days_df[
+    (days_df["dteday"].dt.date >= start_date) &
+    (days_df["dteday"].dt.date <= end_date)
+]
+
+main_df_hour = hours_df[
+    (hours_df["dteday"].dt.date >= start_date) &
+    (hours_df["dteday"].dt.date <= end_date)
+]
 
 if main_df_days.empty:
     st.warning("⚠️ Tidak ada data untuk rentang tanggal yang dipilih.")
     st.stop()
 
+# ===============================
+# HEADER
+# ===============================
 st.markdown('<h1 class="main-title">🚲 Bike Sharing Analytics By Rizkillah</h1>', unsafe_allow_html=True)
 st.markdown("Selamat datang. Dashboard ini menyajikan **insight** mendalam tentang performa operasional bisnis.")
 st.markdown("---")
 
+# ===============================
+# KPI
+# ===============================
 st.subheader("Ringkasan Performa Kunci")
 col1, col2, col3 = st.columns(3)
 
