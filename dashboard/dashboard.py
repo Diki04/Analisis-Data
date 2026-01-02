@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 import datetime
+import os
 
 st.set_page_config(
     page_title="Bike Sharing Analytics By Rizkillah",
@@ -57,10 +58,17 @@ st.markdown("""
 @st.cache_data
 def load_data():
     try:
-        days_df = pd.read_csv("./day_clean.csv")
-        hours_df = pd.read_csv("./hour_clean.csv")
-    except FileNotFoundError:
-        st.error("File CSV tidak ditemukan.")
+        base_dir = os.path.dirname(__file__)
+        days_path = os.path.join(base_dir, "day_clean.csv")
+        hours_path = os.path.join(base_dir, "hour_clean.csv")
+
+        days_df = pd.read_csv(days_path)
+        hours_df = pd.read_csv(hours_path)
+
+        return days_df, hours_df
+
+    except FileNotFoundError as e:
+        st.error(f"File CSV tidak ditemukan: {e}")
         st.stop()
 
     datetime_columns = ["dteday"]
