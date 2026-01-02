@@ -5,9 +5,6 @@ import streamlit as st
 import datetime
 import os
 
-# ===============================
-# PAGE CONFIG
-# ===============================
 st.set_page_config(
     page_title="Bike Sharing Analytics By Rizkillah",
     page_icon="🚲",
@@ -17,9 +14,6 @@ st.set_page_config(
 COLOR_PRIMARY = "#007BFF"
 COLOR_ACCENT = "#FF5733"
 
-# ===============================
-# THEME
-# ===============================
 sns.set_theme(style="white", rc={
     "axes.grid": True,
     "grid.color": "#E9ECEF",
@@ -54,9 +48,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ===============================
-# LOAD DATA (FIXED)
-# ===============================
 @st.cache_data
 def load_data():
     base_dir = os.path.dirname(__file__)
@@ -72,9 +63,6 @@ def load_data():
 
     return days_df, hours_df
 
-# ===============================
-# FEATURE ENGINEERING
-# ===============================
 def create_advanced_features(df):
     season_map = {1: 'Spring', 2: 'Summer', 3: 'Fall', 4: 'Winter'}
     if df['season'].dtype in ['int64', 'int32']:
@@ -96,16 +84,10 @@ def create_advanced_features(df):
 
     return df
 
-# ===============================
-# LOAD & PROCESS
-# ===============================
 days_df_raw, hours_df_raw = load_data()
 days_df = create_advanced_features(days_df_raw)
 hours_df = create_advanced_features(hours_df_raw)
 
-# ===============================
-# DATE FILTER (FIXED)
-# ===============================
 min_date = days_df["dteday"].min().date()
 max_date = days_df["dteday"].max().date()
 
@@ -133,16 +115,17 @@ if main_df_days.empty:
     st.warning("⚠️ Tidak ada data untuk rentang tanggal yang dipilih.")
     st.stop()
 
-# ===============================
-# HEADER
-# ===============================
 st.markdown('<h1 class="main-title">🚲 Bike Sharing Analytics By Rizkillah</h1>', unsafe_allow_html=True)
-st.markdown("Selamat datang. Dashboard ini menyajikan **insight** mendalam tentang performa operasional bisnis.")
+st.markdown(
+    """
+    Dashboard ini dirancang untuk menyajikan *insight* yang komprehensif
+    terkait pola penggunaan sepeda, tren permintaan, serta faktor-faktor
+    yang memengaruhi performa operasional layanan bike sharing.
+    """
+)
 st.markdown("---")
 
-# ===============================
-# KPI
-# ===============================
+
 st.subheader("Ringkasan Performa Kunci")
 col1, col2, col3 = st.columns(3)
 
