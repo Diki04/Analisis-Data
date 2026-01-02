@@ -31,6 +31,7 @@ sns.set_theme(style="white", rc={
 })
 
 # Custom CSS untuk Insight Box (Sesuai request sebelumnya)
+# SAYA MENAMBAHKAN STYLE .recommendation-box AGAR BEDA WARNA SEDIKIT (HIJAU) UNTUK PEMBEDA
 st.markdown("""
 <style>
 .main-title {
@@ -42,9 +43,18 @@ st.markdown("""
 .insight-box {
     background-color: #262730; /* Warna latar gelap */
     color: #FFFFFF;            /* Teks putih agar terbaca */
-    border-left: 5px solid #007BFF;
+    border-left: 5px solid #007BFF; /* Biru untuk Insight */
     padding: 15px;
     margin-top: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.recommendation-box {
+    background-color: #262730; 
+    color: #FFFFFF;            
+    border-left: 5px solid #28a745; /* Hijau untuk Rekomendasi */
+    padding: 15px;
+    margin-top: 10px; /* Jarak sedikit dari insight */
     border-radius: 5px;
     font-size: 16px;
 }
@@ -54,12 +64,18 @@ st.markdown("""
 # --- 3. DATA LOADING ---
 @st.cache_data
 def load_data():
-    base_dir = os.path.dirname(__file__)
-    days_path = os.path.join(base_dir, "day_clean.csv")
-    hours_path = os.path.join(base_dir, "hour_clean.csv")
+    # Pastikan file day_clean.csv dan hour_clean.csv ada di folder yang sama dengan script
+    try:
+        base_dir = os.path.dirname(__file__)
+        days_path = os.path.join(base_dir, "day_clean.csv")
+        hours_path = os.path.join(base_dir, "hour_clean.csv")
 
-    days_df = pd.read_csv(days_path)
-    hours_df = pd.read_csv(hours_path)
+        days_df = pd.read_csv(days_path)
+        hours_df = pd.read_csv(hours_path)
+    except FileNotFoundError:
+        # Fallback jika dijalankan langsung tanpa struktur folder
+        days_df = pd.read_csv("day_clean.csv")
+        hours_df = pd.read_csv("hour_clean.csv")
 
     days_df["dteday"] = pd.to_datetime(days_df["dteday"])
     hours_df["dteday"] = pd.to_datetime(hours_df["dteday"])
@@ -116,7 +132,7 @@ if main_df_days.empty:
 st.markdown('<h1 class="main-title">🚲 Bike Sharing Analytics By Rizkillah</h1>', unsafe_allow_html=True)
 st.markdown(
     """
-    Dashboard ini dirancang untuk menyajikan *insight* yang komprehensif
+    Dashboard ini dirancang untuk menyajikan **insight** yang komprehensif
     terkait pola penggunaan sepeda, tren permintaan, serta faktor-faktor
     yang memengaruhi performa operasional layanan bike sharing.
     """
@@ -194,6 +210,16 @@ with st.container():
     Grafik menunjukkan adanya fluktuasi, namun garis tren (Moving Average) membantu melihat pola pertumbuhan jangka panjang yang lebih jelas.
     </div>
     """, unsafe_allow_html=True)
+
+    # ADDED RECOMMENDATION
+    st.markdown("""
+    <div class="recommendation-box">
+    🎯 <b>Actionable Recommendation:</b><br>
+    Pastikan stok sepeda selalu tersedia minimal di angka rata-rata harian. 
+    Lakukan <i>maintenance</i> atau perbaikan unit besar-besaran saat tren sedang menyentuh titik terendah (Min) untuk menghindari kekurangan armada saat permintaan puncak.
+    </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("---")
 
 # --- VISUALISASI 2: Cuaca ---
@@ -232,6 +258,16 @@ with st.container():
     Kondisi <b>Ideal Humidity</b> dan <b>Low Wind</b> menghasilkan rata-rata penyewaan tertinggi.
     </div>
     """, unsafe_allow_html=True)
+
+    # ADDED RECOMMENDATION
+    st.markdown("""
+    <div class="recommendation-box">
+    🎯 <b>Actionable Recommendation:</b><br>
+    Integrasikan data cuaca <b>real-time</b> ke aplikasi. 
+    Berikan notifikasi promosi saat cuaca diprediksi "Ideal" untuk meningkatkan penjualan, dan berikan peringatan keselamatan kepada pengguna saat cuaca "High Wind".
+    </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("---")
 
 # --- VISUALISASI 3: Hari Libur ---
@@ -264,6 +300,16 @@ with st.container():
     rata-rata penyewaan harian juga menunjukkan bahwa hari kerja/biasa lebih sibuk dibandingkan hari libur nasional.
     </div>
     """, unsafe_allow_html=True)
+
+    # ADDED RECOMMENDATION
+    st.markdown("""
+    <div class="recommendation-box">
+    🎯 <b>Actionable Recommendation:</b><br>
+    Pada <b>Hari Kerja</b>, fokuskan distribusi sepeda di area perkantoran dan stasiun transit. 
+    Pada <b>Hari Libur</b>, buat paket promo "Akhir Pekan" atau "Family Bundling" untuk menarik segmen pengguna rekreasi yang lebih santai.
+    </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("---")
 
 # --- VISUALISASI 4: Musim ---
@@ -296,6 +342,16 @@ with st.container():
     Hal ini menunjukkan preferensi pengguna yang kuat terhadap kondisi cuaca pada musim tersebut dibandingkan musim lainnya.
     </div>
     """, unsafe_allow_html=True)
+
+    # ADDED RECOMMENDATION
+    st.markdown("""
+    <div class="recommendation-box">
+    🎯 <b>Actionable Recommendation:</b><br>
+    Alokasikan anggaran pemasaran terbesar pada awal musim puncak (Fall/Summer) untuk memaksimalkan pendapatan. 
+    Pada <b>Low Season</b> (Spring), terapkan strategi efisiensi biaya operasional atau tawarkan diskon <b>Early Bird</b>.
+    </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("---")
 
 # --- VISUALISASI 5: Hourly Trend ---
@@ -335,6 +391,16 @@ with st.container():
     Pola ini mengindikasikan penggunaan sepeda yang kuat untuk keperluan komuter (berangkat/pulang kerja).
     </div>
     """, unsafe_allow_html=True)
+
+    # ADDED RECOMMENDATION
+    st.markdown("""
+    <div class="recommendation-box">
+    🎯 <b>Actionable Recommendation:</b><br>
+    Terapkan <b>Dynamic Rebalancing</b>:
+    Pastikan stok sepeda penuh di area pemukiman sebelum jam 08:00 pagi, dan pindahkan stok ke area perkantoran sebelum jam 17:00 sore untuk mengakomodasi arus komuter.
+    </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("---")
 
 # --- VISUALISASI 6: User & Monthly ---
@@ -364,6 +430,15 @@ with st.container():
     💡 <b>Key Insight:</b><br>
     Mayoritas pengguna adalah <b>Registered User</b>. 
     Hal ini penting untuk strategi bisnis: fokus pada retensi pengguna terdaftar sambil mencoba mengonversi pengguna kasual menjadi member.
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ADDED RECOMMENDATION
+    st.markdown("""
+    <div class="recommendation-box">
+    🎯 <b>Actionable Recommendation:</b><br>
+    Buat program <b>Loyalty Rewards</b> untuk mempertahankan pengguna <b>Registered</b> (seperti poin per km). 
+    Untuk pengguna <b>Casual</b>, tawarkan promo "Diskon Pendaftaran Member" setelah mereka menyelesaikan perjalanan pertama.
     </div>
     """, unsafe_allow_html=True)
 
