@@ -1,46 +1,100 @@
-# Submission Dicoding "Belajar Analisis Data dengan Python"
+# 🚲 Bike Sharing Data Analysis
 
-## Preview
-<img src="./dashboard.png">
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.9%2B-blue" alt="Python Badge">
+  <img src="https://img.shields.io/badge/Streamlit-1.28-FF4B4B" alt="Streamlit Badge">
+  <img src="https://img.shields.io/badge/Pandas-Data%20Analysis-150458" alt="Pandas Badge">
+</p>
 
-## Project Analisis Data
+**Proyek Analisis Data: Bike Sharing Dataset**
 
-Repository ini berisi proyek data analytics yang saya kerjakan. Deployment in **Streamlit** <img src="https://user-images.githubusercontent.com/7164864/217935870-c0bc60a3-6fc0-4047-b011-7b4c59488c91.png" alt="Streamlit logo"></img>
+Repository ini berisi proyek data analytics yang merupakan bagian dari submission "Belajar Analisis Data dengan Python" di Dicoding. Proyek ini berfokus pada analisis data penyewaan sepeda untuk mendapatkan wawasan bisnis yang berguna.
 
-## Deskripsi
+## 📊 Preview Dashboard
+Berikut adalah tampilan dashboard interaktif yang dibuat menggunakan Streamlit:
 
-Proyek ini bertujuan untuk menganalisis data pada Bike Sharing Dataset. Tujuan akhirnya adalah untuk menghasilkan wawasan dan informasi yang berguna dari data yang dianalisis.
+![Dashboard Preview](./dashboard.png)
+*(Pastikan file dashboard.png sudah ada di root folder repository)*
 
-## Struktur Direktori
+🔗 **Live Demo:** [Klik di sini untuk melihat Dashboard](https://bike-sharing-analytics-by-rizkillah.streamlit.app/)
 
-- **/data**: Direktori ini berisi data yang digunakan dalam proyek, dalam format .csv .
-- **/dashboard**: Direktori ini berisi main.py yang digunakan untuk membuat dashboard hasil analisis data.
-- **notebook.ipynb**: File ini yang digunakan untuk melakukan analisis data.
+## 📝 Deskripsi Proyek
+Proyek ini bertujuan untuk menganalisis data penyewaan sepeda (Bike Sharing Dataset). Analisis ini berfokus pada identifikasi pola musiman, pengaruh cuaca terhadap jumlah penyewaan, serta perbandingan antara pengguna kasual dan terdaftar.
 
-## Instalasi
+**Pertanyaan Bisnis yang Dijawab:**
+* Berapa rata-rata, minimum, dan maksimum jumlah peminjaman sepeda per hari ? <br>
+* Apakah kelembaban (hum) dan kecepatan angin (windspeed) mempengaruhi jumlah peminjaman ? <br>
+* Bagaimana perbedaan jumlah penyewaan antara: Hari kerja vs hari libur? <br>
+* Bagaimana perbedaan jumlah penyewaan antara: Musim panas vs musim dingin? <br>
+* Pada jam berapa penyewaan sepeda paling tinggi ? <br>
 
-1. Clone repository ini ke komputer lokal Anda menggunakan perintah berikut:
+## 📂 Struktur Direktori
+Berikut adalah struktur folder dari proyek ini:
+
+```text
+.
+├── dashboard
+│   ├── dashboard.py      # File utama untuk menjalankan dashboard Streamlit
+│   └── main_data.csv     # Dataset bersih yang digunakan untuk dashboard
+├── data
+│   ├── day.csv           # Dataset harian (mentah)
+│   └── hour.csv          # Dataset per jam (mentah)
+├── notebook.ipynb        # Jupyter Notebook untuk eksplorasi dan analisis data
+├── README.md             # Dokumentasi proyek
+└── requirements.txt      # Daftar pustaka Python yang dibutuhkan
+```
+
+## ⚙️ Instalasi
+
+1. **Clone Repository**
 
    ```shell
    git clone https://github.com/Diki04/Analisis-Data.git
+   cd Analisis-Data
    ```
 
-2. Pastikan Anda memiliki lingkungan Python yang sesuai dan pustaka-pustaka yang diperlukan. Anda dapat menginstal pustaka-pustaka tersebut dengan menjalankan perintah berikut:
+2. **Setup Environment (Opsional tapi Disarankan)**
+   Sangat disarankan untuk menggunakan environment virtual agar tidak mengganggu instalasi Python global.
 
-    ```shell
-    pip install streamlit
-    pip install -r requirements.txt
-    ```
+   ```shell
+   # Untuk Windows
+   python -m venv venv
+   venv\Scripts\activate
 
-## Penggunaan
-1. Masuk ke direktori proyek (Local):
+   # Untuk Mac/Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
-    ```shell
-    cd bike-sharing/dashboard/
-    streamlit run dashboard.py
-    ```
-    Atau bisa dengan kunjungi website ini [Project Data Analytics](https://bike-sharing-ariniamsr.streamlit.app/)
+3. **Install Dependencies**
+   Pastikan Anda berada di dalam direktori proyek, lalu jalankan:
 
-## Kontribusi
-Anda dapat berkontribusi pada proyek ini dengan melakukan pull request. Pastikan untuk menjelaskan perubahan yang Anda usulkan secara jelas dan menyeluruh.
+   ```shell
+   pip install -r requirements.txt
+   ```
 
+4. **Jalankan Dashboard**
+   Masuk ke direktori dashboard dan jalankan aplikasi Streamlit:
+
+   ```shell
+   cd dashboard
+   streamlit run dashboard.py
+   ```
+
+## 📚 Teknologi yang Digunakan
+- **Python**: Bahasa pemrograman utama.
+- **Pandas**: Untuk manipulasi dan analisis data.
+- **NumPy**: Untuk operasi numerik.
+- **Matplotlib & Seaborn**: Untuk visualisasi data statis.
+- **Streamlit**: Untuk membuat dashboard interaktif berbasis web.
+
+## 🤝 Kontribusi
+Kontribusi selalu diterima! Jika Anda ingin berkontribusi:
+1. Fork repository ini.
+2. Buat branch fitur baru (`git checkout -b fitur-baru`).
+3. Commit perubahan Anda (`git commit -m 'Menambahkan fitur baru'`).
+4. Push ke branch tersebut (`git push origin fitur-baru`).
+5. Buat Pull Request.
+
+---
+**© Created by Rizkillah Ramanda Sinyo - 2026**
